@@ -60,9 +60,11 @@ public class javagame {
 		  if (command.equals("south") || command.equals("s") ){
 					//north
 					  if (currentLocale == 1){
-						  currentLocale = 0;
-					  } else if (currentLocale == 0){
 						  currentLocale = 2;
+					  } else if (currentLocale == 0){
+						  currentLocale = 1;
+					  } else if (currentLocale == 2){
+						  System.out.println("You can't go beneath the boat.");
 					  }
 		  } else if ( command.equals("exit") || command.equals("quit")){
 			done = true; 
