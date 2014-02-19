@@ -1,0 +1,303 @@
+<html>
+<head>
+	<title>
+		JavaScript Game 
+	</title>
+<style>
+#body
+{
+background-image:url('http://i.imgur.com/360k4qb.png');
+background-repeat:no-repeat;
+background-position:right bottom;
+}
+</style>
+
+<script> 
+function init(){
+document.getElementById("start").innerHTML="Town" + "\n";
+document.getElementById("description").innerHTML = "This is your home town.";
+document.getElementById("scoreDisplay").innerHTML = score;
+loc[0].hasVisited = "yes";
+document.getElementById("inventoryDisplay").innerHTML = "Gold" + "\n" + "\n" + document.getElementById("inventoryDisplay").innerHTML + "\n";
+//disables buttons at start
+if (currentLocale == 0){
+document.getElementById("southButton").disabled = true;
+document.getElementById("eastButton").disabled = true;
+document.getElementById("westButton").disabled = true;
+}
+}
+//global variables for the game.
+var currentLocale = 0;
+var dir = 0;
+var score = 5;
+
+function Locale(id) {
+            this.id = id;
+            
+            this.name = "";
+            this.desc = "";
+            this.hasVisited = "";
+            
+            this.toString = function() {
+               return "[Locale id=" + this.id + " name=" + this.name + " desc=" + this.desc + "]";
+            }
+         }
+
+var loc = new Array();
+       
+        loc[0] = new Locale(0);
+        loc[0].name = "Town";
+        loc[0].desc = "This is your home town";  
+        loc[0].hasVisited = "no";
+
+        loc[1] = new Locale(1);
+        loc[1].name = "Market";
+        loc[1].desc = "You should buy a weapon";  
+        loc[1].hasVisited = "no";
+
+        loc[2] = new Locale(2);
+        loc[2].name = "Ocean";
+        loc[2].desc = "There is a message in a bottle.";  
+        loc[2].hasVisited = "no";
+
+        loc[3] = new Locale(3);
+        loc[3].name = "Field";
+        loc[3].desc = "The grass here is nice and soft.";  
+        loc[3].hasVisited = "no";
+
+        loc[4] = new Locale(4);
+        loc[4].name = "Desert";
+        loc[4].desc = "It is so hot. You should have brought some water!";  
+        loc[4].hasVisited = "no";
+
+        loc[5] = new Locale(5);
+        loc[5].name = "Plains";
+        loc[5].desc = "This is the most land you have ever seen!";  
+        loc[5].hasVisited = "no";
+
+        loc[6] = new Locale(6);
+        loc[6].name = "Glacier";
+        loc[6].desc = "You are almost frozen solid.";  
+        loc[6].hasVisited = "no";
+
+        loc[7] = new Locale(7);
+        loc[7].name = "The office";
+        loc[7].desc = "There is nothing to do here yet. Go back.";  
+        loc[7].hasVisited = "no"; 
+        
+function Inventory(id) {
+            this.id = id;
+            
+            this.name = "";
+            this.desc = "";
+            this.hasItem = "no";
+            
+            this.toString = function() {
+               return "[Locale id=" + this.id + " name=" + this.name + " desc=" + this.desc + "]";
+            }
+         }
+
+var item = new Array();
+    
+        item[0] = new Inventory(0);
+        item[0].name = "Gold";
+        item[0].desc = "You start with gold";
+        item[0].hasItem = "yes";
+        
+        item[1] = new Inventory(1);
+        item[1].name = "Lotus Notes uninstaller";
+        item[1].desc = "The best item in the game";
+        item[1].hasItem = "no";
+        
+        item[2] = new Inventory(2);
+        item[2].name = "Message in a bottle";
+        item[2].desc = "The message reads: Please save me! I am stuck using Lotus Notes!";
+        item[2].hasItem = "no";
+        
+        item[3] = new Inventory(3);
+        item[3].name = "Princess Kiss";
+        item[3].desc = "The second best item in the game.";
+        item[3].hasItem = "no";
+        
+        
+//takes user input from text box
+function userCommand(){
+var userInput = document.getElementById("command");
+
+	if (userInput.value.toLowerCase() == "help" || userInput.value.toLowerCase() == "h"){
+        document.getElementById("commandReturn").innerHTML = "You can type 'take', 'uninstall', 'buy', 'kick', 'north', 'south', 'east', 'west', 'puke'";
+	
+    } else if (userInput.value.toLowerCase() == "quit" || userInput.value.toLowerCase() == "q"){
+        document.getElementById("commandReturn").innerHTML = "Thanks for playing!";
+	
+    } else if (userInput.value.toLowerCase() == "uninstall" || userInput.value.toLowerCase() == "u"){
+			if (item[1].hasItem == "no"){
+				document.getElementById("commandReturn").innerHTML = "You do not have a weapon.";
+			} else if (item[1].hasItem == "yes" && currentLocale == 7){
+				document.getElementById("commandReturn").innerHTML = "You uninstalled Lotus Notes!!!" + "\n" + "You win!!!";
+                item[3].hasVisited = "yes"
+                document.getElementById("inventoryDisplay").innerHTML = "Princess' Kiss" + "\n" + "\n" + document.getElementById("inventoryDisplay").innerHTML + "\n";
+			} else if (item[1].hasItem == "yes"){
+				document.getElementById("commandReturn").innerHTML = "There is nothing to uninstall.";
+				}
+	
+    } else if (userInput.value.toLowerCase() == "take" || userInput.value.toLowerCase() == "t"){
+			if (currentLocale == 2 && item[2].hasItem == "no"){
+				document.getElementById("commandReturn").innerHTML = item[2].desc;
+				loc[2].desc = "You hear the waves crash on the shore.";
+				item[2].hasItem = "yes";
+                document.getElementById("inventoryDisplay").innerHTML = "Message in a Bottle" + "\n" + "\n" + document.getElementById("inventoryDisplay").innerHTML + "\n";
+			} else {
+				document.getElementById("commandReturn").innerHTML = "There is nothing to take.";
+			}
+	
+    } else if (userInput.value.toLowerCase() == "buy" || userInput.value.toLowerCase() == "b"){
+			if (currentLocale == 1 && item[1].hasItem == "no") {
+                document.getElementById("commandReturn").innerHTML = "Merchant: That is some nice software. Why dont you give it a try at the ocean?";
+				loc[currentLocale].desc = "This your local software market.";
+				item[currentLocale].hasItem = "yes";
+                loc[7].desc = "You can see the princess using Lotus Notes! Save her!!!";
+                document.getElementById("inventoryDisplay").innerHTML = "Lotus Notes Uninstaller" + "\n" + "\n" + document.getElementById("inventoryDisplay").innerHTML + "\n";
+                
+			}  else {
+            	document.getElementById("commandReturn").innerHTML = "There is nothing to buy.";
+			}
+	
+    } else  if (userInput.value.toLowerCase() == "kick" || userInput.value.toLowerCase() == "k"){
+		document.getElementById("commandReturn").innerHTML = "You try to throw a few kicks but you fall on your ass.";
+	
+    } else if (userInput.value.toLowerCase() == "north" || userInput.value.toLowerCase() == "n"){
+		dir = 0;
+		move();
+    
+    } else if (userInput.value.toLowerCase() == "south" || userInput.value.toLowerCase() == "s"){
+		dir = 1;
+		move();
+	
+    } else if (userInput.value.toLowerCase() == "east" || userInput.value.toLowerCase() == "e"){
+		dir = 2;
+		move();
+	
+    } else if (userInput.value.toLowerCase() == "west" || userInput.value.toLowerCase() == "w"){
+		dir = 3;
+		move();
+	
+    } else if (userInput.value.toLowerCase() == "puke" || userInput.value.toLowerCase() == "p"){
+		document.getElementById("commandReturn").innerHTML = "You threw up all over yourself";
+	} 
+				
+}
+
+//sets dir for the move function below
+function north(){
+	dir = 0;
+    move();
+}
+function south(){
+	dir = 1;
+	move();
+}
+function east(){
+	dir = 2;
+	move();
+}
+function west(){
+	dir = 3;
+	move();
+}
+
+//main function for moving with the 2d array
+function move(){
+var nav = 		[ // n  s  e  w
+/*Town 0*/	        [1,-1,-1,-1], 
+/*market 1*/		[-1,0, 3, 2],
+/*ocean 2*/		    [-1,-1,1,-1],
+/*field 3*/			[4,-1,-1, 1],
+/*desert 4*/		[6, 3,-1, 5],
+/*plains 5*/		[7,-1, 4,-1],
+/*glacier 6*/		[-1,4,-1, 7],
+/*castle 7*/		[-1,5, 6,-1]];
+
+var wrongWay = currentLocale;
+currentLocale = nav[currentLocale][dir];
+
+if(dir<0||dir>7||currentLocale==-1){	
+currentLocale=wrongWay;
+document.getElementById("start").innerHTML = loc[currentLocale].name + "\n" + "You can't go that way" + "\n" + document.getElementById("start").innerHTML + "\n";
+} else {
+document.getElementById("start").innerHTML = loc[currentLocale].name + "\n" + document.getElementById("start").innerHTML + "\n";
+document.getElementById("description").innerHTML = loc[currentLocale].desc + "\n" + document.getElementById("description").innerHTML + "\n";
+if (loc[currentLocale].hasVisited == "no"){
+    score = score + 5;
+    document.getElementById("scoreDisplay").innerHTML = score;
+    loc[currentLocale].hasVisited = "yes";
+}
+}
+//disables buttons
+if (currentLocale == 0){
+    document.getElementById("northButton").disabled = false;
+    document.getElementById("southButton").disabled = true;
+    document.getElementById("eastButton").disabled = true;
+    document.getElementById("westButton").disabled = true;
+}else if (currentLocale == 1){
+    document.getElementById("northButton").disabled = true;
+    document.getElementById("southButton").disabled = false;
+    document.getElementById("eastButton").disabled = false;
+    document.getElementById("westButton").disabled = false;
+} else if (currentLocale == 2){
+    document.getElementById("northButton").disabled = true;
+    document.getElementById("southButton").disabled = true;
+    document.getElementById("eastButton").disabled = false;
+    document.getElementById("westButton").disabled = true;
+} else if (currentLocale == 3){
+    document.getElementById("northButton").disabled = false;
+    document.getElementById("southButton").disabled = true;
+    document.getElementById("eastButton").disabled = true;
+    document.getElementById("westButton").disabled = false;
+} else if (currentLocale == 4){
+    document.getElementById("northButton").disabled = false;
+    document.getElementById("southButton").disabled = false;
+    document.getElementById("eastButton").disabled = true;
+    document.getElementById("westButton").disabled = false;
+} else if (currentLocale == 5){
+    document.getElementById("northButton").disabled = false;
+    document.getElementById("southButton").disabled = true;
+    document.getElementById("eastButton").disabled = false;
+    document.getElementById("westButton").disabled = true;
+} else if (currentLocale == 6){
+    document.getElementById("northButton").disabled = true;
+    document.getElementById("southButton").disabled = false;
+    document.getElementById("eastButton").disabled = true;
+    document.getElementById("westButton").disabled = false;
+} else if (currentLocale == 7){
+    document.getElementById("northButton").disabled = true;
+    document.getElementById("southButton").disabled = false;
+    document.getElementById("eastButton").disabled = false;
+    document.getElementById("westButton").disabled = true;
+}
+}
+
+</script>
+</head>
+<body onLoad="init()" id="body">
+<textarea id="start"  rows="10" cols="40"></textarea>
+&nbsp &nbsp 
+<textarea id="description"  rows="10" cols="40"></textarea>
+</br>
+<input type="text" id="command" onkeydown="if (event.keyCode == 13){ document.getElementById('commandButton').click()}"></input> <button id="commandButton" onclick="userCommand()"> Go </button> 
+<textarea id="scoreDisplay" rows="1" cols="2"></textarea> Inventory:
+</br>
+<textarea id="commandReturn" rows="10" cols="25"></textarea>
+&nbsp &nbsp
+<textarea id="inventoryDisplay" rows="10" cols="15"></textarea>
+</br>
+&nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp <button id="northButton" onclick="north()"> North </button>
+</br>
+</br>
+<button id="westButton" onclick="west()"> West </button>
+&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp <button id="eastButton" onclick="east()"> East</button>
+</br>
+</br>
+&nbsp &nbsp &nbsp &nbsp &nbsp &nbsp <button id="southButton" onclick="south()"> South </button>
+</body>
+</html> 
